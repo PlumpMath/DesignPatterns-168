@@ -1,12 +1,13 @@
-﻿using DesignPatterns.Adapter.Models.Interfaces;
+﻿using DesignPatterns.Adapter.Models;
 
 namespace DesignPatterns.Adapter
 {
     public interface ITargetOrm
     {
-        TDbEntity Find<TDbEntity>(int id) where TDbEntity : IDbEntity;
-        void Add<TDbEntity>(TDbEntity entity) where TDbEntity : IDbEntity;
-        void Delete<TDbEntity>(TDbEntity entity) where TDbEntity : IDbEntity;
-        void Update<TDbEntity>(TDbEntity entity) where TDbEntity : IDbEntity;
+        void AddUser(DbUserEntity user, DbUserInfoEntity userInfo);
+        void UpdateUserInfo(int userId, DbUserInfoEntity userInfo);
+        void DeleteUser(int userId);
+        void UpdateUser(int userId, DbUserEntity user);
+        void ChangePassword(int userId, string newPasswordHash);
     }
 }

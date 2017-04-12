@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using DesignPatterns.Adapter.Models;
-using DesignPatterns.Adapter.Models.Interfaces;
 using DesignPatterns.Adapter.SecondOrmLibrary;
 
 namespace DesignPatterns.Adapter
@@ -15,68 +13,41 @@ namespace DesignPatterns.Adapter
             _secondOrm = secondOrm;
         }
 
-        public TDbEntity Find<TDbEntity>(int id) where TDbEntity : IDbEntity
+        public void AddUser(DbUserEntity user, DbUserInfoEntity userInfo)
         {
-            var type = typeof(TDbEntity);
-            if (type == typeof(DbUserEntity))
-            {
-                var result = _secondOrm.Context.Users.FirstOrDefault(x => x.Id == id);
-                var casted = Convert.ChangeType(result, type);
-                return (TDbEntity)casted;
-            }
-            if (type == typeof(DbUserInfoEntity))
-            {
-                var result = _secondOrm.Context.UserInfos.FirstOrDefault(x => x.Id == id);
-                var casted = Convert.ChangeType(result, type);
-                return (TDbEntity)casted;
-            }
-            throw new NotSupportedException();
+            user.UserInfoId = userInfo.Id;
+            _secondOrm.Context.UserInfos.Add(userInfo);
+            _secondOrm.Context.Users.Add(user);
         }
 
-        public void Add<TDbEntity>(TDbEntity entity) where TDbEntity : IDbEntity
+        public void UpdateUserInfo(int userId, DbUserInfoEntity userInfo)
         {
-            var type = typeof(TDbEntity);
-            if (type == typeof(DbUserEntity))
-            {
-                _secondOrm.Context.Users.Add(entity as DbUserEntity);
-            }
-            if (type == typeof(DbUserInfoEntity))
-            {
-                _secondOrm.Context.UserInfos.Add(entity as DbUserInfoEntity);
-            }
-            throw new NotSupportedException();
+            var user = _secondOrm.Context.Users.First(x => x.Id == userId);
+            var dbUserInfo = _secondOrm.Context.UserInfos.First(x => x.Id == user.Id);
+            dbUserInfo.Birthday = userInfo.Birthday;
+            dbUserInfo.Name = userInfo.Name;
         }
 
-        public void Delete<TDbEntity>(TDbEntity entity) where TDbEntity : IDbEntity
+        public void DeleteUser(int userId)
         {
-            var type = typeof(TDbEntity);
-            if (type == typeof(DbUserEntity))
-            {
-                _secondOrm.Context.Users.Remove(entity as DbUserEntity);
-            }
-            if (type == typeof(DbUserInfoEntity))
-            {
-                _secondOrm.Context.UserInfos.Remove(entity as DbUserInfoEntity);
-            }
-            throw new NotSupportedException();
+            var user = _secondOrm.Context.Users.First(x => x.Id == userId);
+            var userInfo = _secondOrm.Context.UserInfos.First(x => x.Id == user.UserInfoId);
+            _secondOrm.Context.UserInfos.Remove(userInfo);
+            _secondOrm.Context.Users.Remove(user);
         }
 
-        public void Update<TDbEntity>(TDbEntity entity) where TDbEntity : IDbEntity
+        public void UpdateUser(int userId, DbUserEntity user)
         {
-            var type = typeof(TDbEntity);
-            if (type == typeof(DbUserEntity))
-            {
-                var existed = _secondOrm.Context.Users.First(x => x.Id == entity.Id);
-                _secondOrm.Context.Users.Remove(existed);
-                _secondOrm.Context.Users.Add(entity as DbUserEntity);
-            }
-            if (type == typeof(DbUserInfoEntity))
-            {
-                var existed = _secondOrm.Context.UserInfos.First(x => x.Id == entity.Id);
-                _secondOrm.Context.UserInfos.Remove(existed);
-                _secondOrm.Context.UserInfos.Add(entity as DbUserInfoEntity);
-            }
-            throw new NotSupportedException();
+            var dbUser = _secondOrm.Context.Users.First(x => x.Id == userId);
+            dbUser.Login = user.Login;
+            dbUser.PasswordHash = user.PasswordHash;
+            dbUser.UserInfoId = user.UserInfoId;
+        }
+
+        public void ChangePassword(int userId, string newPasswordHash)
+        {
+            var user = _secondOrm.Context.Users.First(x => x.Id == userId);
+            user.PasswordHash = newPasswordHash;
         }
     }
 }
