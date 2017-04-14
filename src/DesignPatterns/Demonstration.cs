@@ -2,6 +2,7 @@
 using DesignPatterns.Builder;
 using DesignPatterns.ChainOfResponsibility;
 using DesignPatterns.State;
+using DesignPatterns.Visitor;
 
 namespace DesignPatterns
 {
@@ -13,6 +14,7 @@ namespace DesignPatterns
             BuilderExample.Introduce();
             ChainOfResponsibilityExample.Introduce();
             StateExample.Introduce();
+            VisitorExample.Introduce();
         }
     }
 }
