@@ -20,7 +20,7 @@ namespace DesignPatterns.State
             context.PrintDocument();
             var change = context.GetChange();
 
-            Console.WriteLine(change);
+            Console.WriteLine($"Change left: {change}");
         }
     }
 }
