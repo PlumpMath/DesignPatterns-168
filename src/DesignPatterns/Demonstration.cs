@@ -1,5 +1,7 @@
 ﻿using DesignPatterns.AbstractFactory;
 using DesignPatterns.Builder;
+using DesignPatterns.ChainOfResponsibility;
+using DesignPatterns.State;
 
 namespace DesignPatterns
 {
@@ -9,6 +11,8 @@ namespace DesignPatterns
         {
             AbstractFactoryExample.Introduce();
             BuilderExample.Introduce();
+            ChainOfResponsibilityExample.Introduce();
+            StateExample.Introduce();
         }
     }
 }
