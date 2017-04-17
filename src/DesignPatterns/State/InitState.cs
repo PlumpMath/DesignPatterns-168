@@ -10,26 +10,27 @@ namespace DesignPatterns.State
         {
         }
 
-        public override void InsertMoney(PrintingMachineContext context, int money)
+        public override IState InsertMoney(int money)
         {
             MoneyLeft += money;
             if (MoneyLeft >= PrintingPrice)
             {
-                context.State = new PlaceDocumentState(this);
+                return new PlaceDocumentState(this);
             }
+            return this;
         }
 
-        public override void PlaceDocuments(PrintingMachineContext context, string[] docs)
+        public override IState PlaceDocuments(string[] docs)
         {
             throw new Exception("Please, insert money");
         }
 
-        public override void ChooseDocument(PrintingMachineContext context, int docId)
+        public override IState ChooseDocument(int docId)
         {
             throw new Exception("Something went wrong");
         }
 
-        public override string PrintDocument(PrintingMachineContext context)
+        public override IState PrintDocument(out string printed)
         {
             throw new Exception("Something went wrong");
         }

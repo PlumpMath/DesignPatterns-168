@@ -16,20 +16,19 @@
             SelectedDocumentId = state.SelectedDocumentId;
         }
 
-        public abstract void InsertMoney(PrintingMachineContext context, int money);
+        public abstract IState InsertMoney(int money);
 
-        public abstract void PlaceDocuments(PrintingMachineContext context, string[] docs);
+        public abstract IState PlaceDocuments(string[] docs);
 
-        public abstract void ChooseDocument(PrintingMachineContext context, int docId);
+        public abstract IState ChooseDocument(int docId);
 
-        public abstract string PrintDocument(PrintingMachineContext context);
+        public abstract IState PrintDocument(out string printed);
 
-        public int GetChange(PrintingMachineContext context)
+        public IState GetChange(out int change)
         {
-            var result = MoneyLeft;
+            change = MoneyLeft;
             MoneyLeft = 0;
-            context.State = new InitState(this);
-            return result;
+            return new InitState(this);
         }
     }
 }

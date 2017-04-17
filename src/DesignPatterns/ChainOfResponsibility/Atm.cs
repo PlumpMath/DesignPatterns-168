@@ -20,17 +20,17 @@ namespace DesignPatterns.ChainOfResponsibility
         public bool Validate(string banknote)
         {
             var banknoteObject = GetBanknote(banknote);
-            return _handler.Validate(banknoteObject.Nominal);
+            return _handler.Validate(banknoteObject);
         }
 
         public IEnumerable<Banknote> CashOut(string banknote)
         {
             var banknoteObject = GetBanknote(banknote);
-            if (!_handler.Validate(banknoteObject.Nominal))
+            if (!_handler.Validate(banknoteObject))
             {
                 throw new ArgumentException();
             }
-            var nominals = _handler.CashOut(banknoteObject.Nominal);
+            var nominals = _handler.CashOut(banknoteObject);
             return nominals.Select(x => new Banknote
             {
                 Currency = banknoteObject.Currency,
@@ -68,7 +68,11 @@ namespace DesignPatterns.ChainOfResponsibility
             {
                 return CurrencyType.Eur;
             }
-            return CurrencyType.Ruble;
+            if (banknote.ToLower().Contains("руб"))
+            {
+                return CurrencyType.Ruble;
+            }
+            throw new NotSupportedException("Введённый тип валюты не поддерживается");
         }
     }
 }

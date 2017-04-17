@@ -8,23 +8,23 @@ namespace DesignPatterns.State
         {
         }
 
-        public override void InsertMoney(PrintingMachineContext context, int money)
+        public override IState InsertMoney(int money)
         {
             throw new Exception("Something went wrong");
         }
 
-        public override void PlaceDocuments(PrintingMachineContext context, string[] docs)
+        public override IState PlaceDocuments(string[] docs)
         {
             throw new Exception("You have already inserted your data storage");
         }
 
-        public override void ChooseDocument(PrintingMachineContext context, int docId)
+        public override IState ChooseDocument(int docId)
         {
             SelectedDocumentId = docId;
-            context.State = new PrintDocumentState(this);
+            return new PrintDocumentState(this);
         }
 
-        public override string PrintDocument(PrintingMachineContext context)
+        public override IState PrintDocument(out string printed)
         {
             throw new Exception("No document chosen");
         }

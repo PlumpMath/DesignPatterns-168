@@ -9,32 +9,66 @@ namespace DesignPatterns.ChainOfResponsibility
 
         protected abstract int Value { get; }
 
+        protected abstract CurrencyType[] AcceptableCurrencies { get; }
+
         protected FactorizationHandler(FactorizationHandler nextHandler)
         {
             _nextHandler = nextHandler;
         }
 
-        public virtual bool Validate(int nominal)
+        protected bool IsAvailable(Banknote banknote)
         {
-            var remainder = nominal % Value;
+            return AcceptableCurrencies.Contains(banknote.Currency);
+        }
+
+        public virtual bool Validate(Banknote banknote)
+        {
+            if (!IsAvailable(banknote))
+            {
+                return _nextHandler != null && _nextHandler.Validate(banknote);
+            }
+            var remainder = banknote.Nominal % Value;
             if (remainder == 0)
             {
                 return true;
             }
-            return _nextHandler != null && _nextHandler.Validate(remainder);
+            var transformed = new Banknote
+            {
+                Currency = banknote.Currency,
+                Nominal = remainder
+            };
+            return _nextHandler != null && _nextHandler.Validate(transformed);
         }
 
-        public virtual IEnumerable<int> CashOut(int nominal)
+        public virtual IEnumerable<int> CashOut(Banknote banknote)
         {
-            var quotient = nominal / Value;
-            var remainder = nominal % Value;
-            var result = Enumerable.Repeat(Value, quotient).ToList();
+            if (!IsAvailable(banknote))
+            {
+                foreach (var banknoteObject in _nextHandler.CashOut(banknote))
+                {
+                    yield return banknoteObject;
+                }
+                yield break;
+            }
+            var nominal = banknote.Nominal;
+            var quotient = nominal/Value;
+            var remainder = nominal%Value;
+            foreach (var banknoteObject in Enumerable.Repeat(Value, quotient))
+            {
+                yield return banknoteObject;
+            }
             if (remainder == 0)
             {
-                return result;
+                yield break;
             }
-            result.AddRange(_nextHandler.CashOut(remainder));
-            return result;
+            foreach (var banknoteObject in _nextHandler.CashOut(new Banknote
+            {
+                Currency = banknote.Currency,
+                Nominal = remainder
+            }))
+            {
+                yield return banknoteObject;
+            }
         }
     }
 }

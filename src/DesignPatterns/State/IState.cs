@@ -2,10 +2,10 @@
 {
     public interface IState
     {
-        void InsertMoney(PrintingMachineContext context, int money);
-        void PlaceDocuments(PrintingMachineContext context, string[] docs);
-        void ChooseDocument(PrintingMachineContext context, int docId);
-        string PrintDocument(PrintingMachineContext context);
-        int GetChange(PrintingMachineContext context);
+        IState InsertMoney(int money);
+        IState PlaceDocuments(string[] docs);
+        IState ChooseDocument(int docId);
+        IState PrintDocument(out string printed);
+        IState GetChange(out int change);
     }
 }

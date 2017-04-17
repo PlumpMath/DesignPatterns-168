@@ -2,7 +2,7 @@
 {
     public class PrintingMachineContext
     {
-        public IState State { get; set; }
+        private IState State { get; set; }
 
         public PrintingMachineContext()
         {
@@ -11,27 +11,31 @@
 
         public void InsertMoney(int money)
         {
-            State.InsertMoney(this, money);
+            State = State.InsertMoney(money);
         }
 
         public void PlaceDocument(string[] documents)
         {
-            State.PlaceDocuments(this, documents);
+            State = State.PlaceDocuments(documents);
         }
 
         public void ChooseDocument(int documentId)
         {
-            State.ChooseDocument(this, documentId);
+            State = State.ChooseDocument(documentId);
         }
 
         public string PrintDocument()
         {
-            return State.PrintDocument(this);
+            string printedDocument;
+            State = State.PrintDocument(out printedDocument);
+            return printedDocument;
         }
 
         public int GetChange()
         {
-            return State.GetChange(this);
+            int change;
+            State =  State.GetChange(out change);
+            return change;
         }
     }
 }
